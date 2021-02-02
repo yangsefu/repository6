@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 和绑定的接口全类名对应 -->
+<mapper namespace="com.clive.mapper.GroupMapper">
+<!-- 
+  以前用的自动映射 只要表中的字段和Java中的属性一一对应 就自动映射上去
+  现在在又一个全新的属性 resultMap 手动映射 程序员自己决定映射关系  
+ -->
+ <!-- 现在的关系是一对多关系 group为主体 
+<resultMap type="com.clive.bean.TbItemParamGroup" id="group_key">
+  <id column="id" property="id"/>
+  <result column="groupName" property="groupName"/>
+  <result column="itemCatId" property="itemCatId"/>
+ 
+  <collection property="paramKeys" ofType="com.clive.bean.TbItemParamKey">
+  <id column="paramid" property="id"/>
+  <result column="paramName" property="paramName"/>
+  </collection> </resultMap>                       
+	<select id="findGroupById" parameterType="int" resultMap="group_key">
+		SELECT
+		  a.id,
+		  a.groupName,
+		  a.itemCatId,
+		  b.id paramId,
+		  b.paramName
+		FROM
+		  tbitemparamgroup a
+		INNER JOIN
+		  tbitemparamkey b
+		ON
+		  a.id = b.groupId
+		WHERE
+		  a.id = #{id}
+	</select>
+	-->
+	
+	<!-- 多对一关系  -->
+	<resultMap type="com.clive.bean.TbItemParamKey" id="param_group">
+	<id column="paramId" property="id"/>
+	<result column="paramName" property="paramName"/>
+	<association property="group" javaType="com.clive.bean.TbItemParamGroup">
+	<id column="id" property="id"/>
+	<result column="groupName" property="groupName"/>
+	<result column="itemCatId" property="itemCatId"/>
+	</association>
+	</resultMap>
+	<select id="findParamKeyById" resultMap="param_group">
+	SELECT
+		  a.id,
+		  a.groupName,
+		  a.itemCatId,
+		  b.id paramId,
+		  b.paramName
+		FROM
+		  tbitemparamgroup a
+		INNER JOIN
+		  tbitemparamkey b
+		ON
+		  a.id = b.groupId
+		WHERE
+		  b.id = #{id}
+	</select>
+	
+</mapper>
